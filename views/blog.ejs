@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('./partials/head') %>
+    <title>Home</title>
+    <link rel="stylesheet" href="../public/css/style.css" />
+  </head>
+
+  <body>
+    <%- include('./partials/nav') %><br />
+    <u style="padding: 5px">
+      <a
+        href="/"
+        class="m-3 p-3 pt-3"
+        aria-label="Back to All Blogs"
+        style="text-decoration: none; color: white"
+        >Back to All Blogs
+      </a></u
+    >
+    <div class="article">
+      <% if(locals.blog) { %>
+      <div class="container mt-4">
+        <div
+          style="
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+          "
+        >
+          <h1><%= blog.title %></h1>
+          <% if(blog && blog.createdBy && locals.user && locals.user._id
+          &&locals.user._id === blog.createdBy._id.toString() ){ %>
+          <a id="deleteButton" href="/blog/deleteblog/<%= blog._id %>">
+            <img
+              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAStJREFUSEvtVksOAUEQfS8O4AoOwMYFfC5gwZJwNMKShQv4XMBG7F3BAaRMS5uM0a2rIzIkM8vu9+r1q66aLqKgjwXpQiUsIhUAPQANwMsRAEcAa5LXkKGgsIgYzAZAOxTM7m9JdkNYjXDdOgnFyu7XSZ7eETTCxunWBumQ3LkCiogK9+D+hrCI1ABMco7M2tiuzZL9syeFIdyUZMp9cpxLV8ydarBP1/QbwtljJ+5NEbUA7JOC0rbSPYSG6y0uDdmXXw03SlhETOGZIjqTnFp3rrVgtmKFXwK63H3DcSnsrOAy1a62K6s6zYq2P7W4fLpjU13Mn0vz9v31I7FMhry+1qUHtyI5iG2nIYD5h8IjkosoYXtXTTsMVCMPcLEDxMHHC06ZkYJqeGHCN60sTC6Y6cxIAAAAAElFTkSuQmCC"
+              alt="delete blog"
+              width="30px"
+              height="30px"
+            />
+          </a>
+          <% } %>
+        </div>
+
+        <img src="<%= blog.coverImageURL %>" class="blogImg" width="40%" />
+        <p class="mt-3"><%= blog.body %></p>
+      </div>
+      <div class="container mt-4">
+        <img
+          src="<%= blog.createdBy.profileImageUrl %>"
+          width="50px"
+          style="border-radius: 50%"
+          alt=" "
+        />
+        <%= JSON.stringify(blog.authorName).slice(1,-1) %> <br /><br />
+        <span class="article-published"
+          >Published At : <%= blog.createdAt %></span
+        >
+      </div>
+
+      <div class="container mt-4">
+        <h2>Comments (<%= Comments.length %>)</h2>
+        <% if (locals.user) { %>
+        <form
+          class="w-50 mx-auto"
+          action="/blog/comment/<%= blog._id %>"
+          method="post"
+        >
+          <div class="mb-3">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Enter Comments"
+              name="content"
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+
+      <% } %>
+      <div class="m-3 mr-2 pl-3">
+        <% Comments.forEach((comment) => { %>
+        <div>
+          <img
+            src="<%= comment.createdBy.profileImageUrl %>"
+            width="30px"
+            alt=" "
+            style="border-radius: 50%"
+          />
+          <span class="p-2">
+            <%= JSON.stringify(comment.createdBy.fullName).slice(1,-1) %>
+          </span>
+          ...
+          <p class="pt-3 pl-7"><%= comment.content %></p>
+          like deslike reply
+        </div>
+        <hr />
+        <% })%>
+      </div>
+      <% } %>
+    </div>
+
+    <% include('./partials/script') %>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success m-2",
+          cancelButton: "btn btn-danger m-2",
+        },
+        buttonsStyling: false,
+      });
+      document
+        .getElementById("deleteButton")
+        .addEventListener("click", function (event) {
+          event.preventDefault();
+
+          swalWithBootstrapButtons
+            .fire({
+              title: "Are you sure?",
+              text: "You won't be able to revert this!",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonText: "Yes, delete it!",
+              cancelButtonText: "No, cancel!",
+              reverseButtons: true,
+            })
+            .then((result) => {
+              if (result.isConfirmed) {
+                // Proceed with the deletion by navigating to the delete endpoint
+                window.location.href = this.href;
+              } else if (result.dismiss === Swal.DismissReason.cancel) {
+                swalWithBootstrapButtons.fire({
+                  title: "Cancelled",
+                  text: "Your blog post is safe :)",
+                  icon: "error",
+                });
+              }
+            });
+        });
+    </script>
+  </body>
+</html>

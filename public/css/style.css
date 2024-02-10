@@ -1,0 +1,43 @@
+.article {
+  margin-bottom: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.article-title {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.article-meta {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.article-meta .article-author {
+  margin-right: 10px; /* Add space between author name and publish date */
+}
+
+.article-image {
+  margin-bottom: 20px;
+}
+
+.article-image img {
+  max-width: 100%; /* Resize the image to fit the container */
+  height: auto;
+}
+
+.article-body p {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+}
+
+body {
+  color: #fff;
+  background-color: rgb(41, 39, 39) 3;
+}
