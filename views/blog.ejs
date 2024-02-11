@@ -4,6 +4,12 @@
     <%- include('./partials/head') %>
     <title>Home</title>
     <link rel="stylesheet" href="../public/css/style.css" />
+    <style>
+      /* Override Bootstrap styles to remove dropdown icon */
+      .btn-no-dropdown::after {
+        display: none !important;
+      }
+    </style>
   </head>
 
   <body>
@@ -51,7 +57,7 @@
           style="border-radius: 50%"
           alt=" "
         />
-        <%= JSON.stringify(blog.authorName).slice(1,-1) %> <br /><br />
+        <%= JSON.stringify(blog.createdBy.fullName).slice(1,-1) %> <br /><br />
         <span class="article-published"
           >Published At : <%= blog.createdAt %></span
         >
@@ -81,18 +87,52 @@
       <div class="m-3 mr-2 pl-3">
         <% Comments.forEach((comment) => { %>
         <div>
-          <img
-            src="<%= comment.createdBy.profileImageUrl %>"
-            width="30px"
-            alt=" "
-            style="border-radius: 50%"
-          />
-          <span class="p-2">
-            <%= JSON.stringify(comment.createdBy.fullName).slice(1,-1) %>
-          </span>
-          ...
+          <div style="display: flex; flex-direction: row; align-items: center">
+            <img
+              src="<%= comment.createdBy.profileImageUrl %>"
+              width="30px"
+              height="30px"
+              alt=" "
+              style="border-radius: 50%"
+            />
+            <span class="p-2" style="display: flex; flex-direction: row">
+              <%= JSON.stringify(comment.createdBy.fullName).slice(1,-1) %> <%
+              if (blog && comment && locals.user) { %>
+              <div class="dropdown" style="margin-left: 10px">
+                <a
+                  class="nav-link dropdown-toggle btn-no-dropdown pl-3"
+                  href="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <img
+                    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAQxJREFUSEvtlDFKQ0EURc+tTZEmCIIgZAeJlskqxBUIhhRmK0khouAGzB4C9kJIGetAxFIQG+E5CU8Zhoym+Ukzv/v/vvvucP5lxJ4e7SmXErwz8gV1QV0ZgVKuX7Rm1gK6wJOkaczczA6Ac//2KOkz0bPen7mNqM1sAAyjZT1Jd6t3M6sDz0DT9TnQlvThetYbHy4X/AY0osGFpGNf3A/aTdK6y6A/uJ71bhP8ChxGg0tJR764F7TbJPgq6PeuZ73bBF8Do2iwL2kd5qhX//zE9RfgTNK761nvv8G+4BTohIJNJM2S8tSAC+ALGG8oV9b7Z7kquzWixeUC2QXldUZBXVBXRqCUqzK06eJvKjddH3BvsCIAAAAASUVORK5CYII="
+                  />
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <% if (locals.user._id === blog.createdBy._id.toString() ||
+                    comment.createdBy._id.toString() === locals.user._id) { %>
+                    <form
+                      action="/blog/<%= blog._id %>/comment/<%= comment._id %>"
+                      method="post"
+                    >
+                      <button type="submit" class="dropdown-item">
+                        Delete
+                      </button>
+                    </form>
+                    <% } else { %>
+                    <a class="dropdown-item" href="#">Reply</a>
+                    <a class="dropdown-item" href="#">Report</a>
+                    <% } %>
+                  </li>
+                </ul>
+              </div>
+              <% } %>
+            </span>
+          </div>
           <p class="pt-3 pl-7"><%= comment.content %></p>
-          like deslike reply
         </div>
         <hr />
         <% })%>

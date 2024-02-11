@@ -14,7 +14,7 @@
           <h5 class="card-title"><%= blog.title %></h5>
           <p class="card-text"><%= blog.description%></p>
           <span class="mt-3 mb-3"
-            >by : <%=JSON.stringify(blog.authorName).slice(1,-1) %></span
+            >by :  <%= blog.createdBy.fullName %></span
           >
           <a href="/blog/<%=blog._id  %>" class="btn btn-primary m-3">view</a>
         </div>
