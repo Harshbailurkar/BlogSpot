@@ -7,9 +7,20 @@
   <body>
     <%- include('./partials/nav') %>
     <div class="container mt-5">
+      <% if (locals.error) { %>
+      <div id="error-alert" class="alert alert-danger" role="alert">
+        <%= error %>
+      </div>
+      <script>
+        setTimeout(() => {
+          const errorAlert = document.getElementById("error-alert");
+          errorAlert.style.display = "none";
+        }, 5000);
+      </script>
+      <% } %>
       <form class="w-50 mx-auto" action="/user/signup" method="post">
         <div class="mb-3">
-          <label for="fullName" class="form-label">Full Name</label>
+          <label for="fullName" class="form-label">Username</label>
           <input
             type="text"
             class="form-control"
@@ -43,8 +54,12 @@
           />
         </div>
 
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Signup</button>
       </form>
+      <p class="text-center p-3">
+        Already Have Account?
+        <a href="/user/login" class="btn btn-outline-primary p-1">login</a>
+      </p>
     </div>
     <%- include('./partials/script') %>
   </body>

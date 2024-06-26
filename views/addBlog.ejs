@@ -42,8 +42,9 @@
             required
             class="form-control"
             id="body"
-            style="height: 100px"
             name="body"
+            onkeyup="textAreaAdjust(this)"
+            style="overflow: hidden"
           ></textarea>
         </div>
         <div class="mb-3">
@@ -51,5 +52,11 @@
         </div>
       </form>
     </div>
+    <script>
+      function textAreaAdjust(element) {
+        element.style.height = "1px";
+        element.style.height = 25 + element.scrollHeight + "px";
+      }
+    </script>
   </body>
 </html>

@@ -6,13 +6,15 @@ import cookieParser from "cookie-parser";
 import checkForAuthenticationCookie from "./middleware/auth.js";
 import BlogRoute from "./routes/blog.routes.js";
 import Blogs from "./models/blog.models.js";
+import dotenv from "dotenv";
 
+dotenv.config({
+  path: "./.env",
+});
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-connectToMongoDB("mongodb://127.0.0.1:27017/blogspot").then(
-  console.log("mongoDB connected")
-);
+connectToMongoDB(process.env.MONGO_URL).then(console.log("mongoDB connected"));
 
 app.set("view engine", "ejs");
 app.set("views", path.resolve("./views"));

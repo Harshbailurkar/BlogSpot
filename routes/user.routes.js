@@ -2,6 +2,7 @@ import express from "express";
 import Users from "../models/user.models.js";
 import {
   handleAddUser,
+  handleDeleteUser,
   handleLoginUser,
   handleUserSetting,
 } from "../controllers/user.controller.js";
@@ -32,4 +33,5 @@ router.get("/setting", async (req, res) => {
 
 router.post("/setting", handleUserSetting);
 
+router.get("/deleteuser", handleDeleteUser);
 export default router;

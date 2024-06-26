@@ -1,9 +1,19 @@
 import Users from "../models/user.models.js";
+import Blogs from "../models/blog.models.js";
+import comments from "../models/comments.models.js";
 
 async function handleAddUser(req, res) {
-  const { fullName, email, password } = req.body;
-  await Users.create({ fullName, email, password });
-  return res.redirect("/");
+  try {
+    let { fullName, email, password } = req.body;
+    fullName = fullName.replace(/ /g, "_").trim();
+    await Users.create({ fullName, email, password });
+    return res.redirect("login");
+  } catch (err) {
+    const msg = "Credentials Already Exits! Name and Email should be unique.";
+    res.render("signup", {
+      error: msg,
+    });
+  }
 }
 
 async function handleLoginUser(req, res) {
@@ -21,7 +31,7 @@ async function handleLoginUser(req, res) {
 async function handleUserSetting(req, res) {
   const { changeName, changeEmail, changePassword } = req.body;
   const updateFields = {};
-  if (changeName) updateFields.fullName = changeName;
+  if (changeName) updateFields.fullName = changeName.replace(/ /g, "_").trim();
   if (changeEmail) updateFields.email = changeEmail;
   if (changePassword) updateFields.password = changePassword;
   if (Object.keys(updateFields).length === 0) {
@@ -30,4 +40,18 @@ async function handleUserSetting(req, res) {
   await Users.findByIdAndUpdate(req.user._id, updateFields);
   return res.redirect("login");
 }
-export { handleAddUser, handleLoginUser, handleUserSetting };
+
+async function handleDeleteUser(req, res) {
+  try {
+    await Users.deleteOne({ _id: req.user._id });
+    await Blogs.deleteMany({ createdBy: req.user._id });
+    await comments.deleteMany({ createdBy: req.user._id });
+    res.clearCookie("token");
+    return res.redirect("/");
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+export { handleAddUser, handleLoginUser, handleUserSetting, handleDeleteUser };

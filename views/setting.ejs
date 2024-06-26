@@ -55,8 +55,52 @@
         />
         <button type="submit" class="btn btn-primary mt-3">Save change</button>
       </form>
+      <div>
+        <label class="mt-5"> Delete Your Account : </label>
+        <a href="/user/deleteuser" id="deleteButton" class="btn btn-danger"
+          >Delete</a
+        >
+      </div>
     </div>
 
     <% include('./partials/script') %>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success m-2",
+          cancelButton: "btn btn-danger m-2",
+        },
+        buttonsStyling: false,
+      });
+      document
+        .getElementById("deleteButton")
+        .addEventListener("click", function (event) {
+          event.preventDefault();
+
+          swalWithBootstrapButtons
+            .fire({
+              title: "Are you sure?",
+              text: "You won't be able to revert this!",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonText: "Yes, delete it!",
+              cancelButtonText: "No, cancel!",
+              reverseButtons: true,
+            })
+            .then((result) => {
+              if (result.isConfirmed) {
+                // Proceed with the deletion by navigating to the delete endpoint
+                window.location.href = this.href;
+              } else if (result.dismiss === Swal.DismissReason.cancel) {
+                swalWithBootstrapButtons.fire({
+                  title: "Cancelled",
+                  text: "Your blog post is safe :)",
+                  icon: "error",
+                });
+              }
+            });
+        });
+    </script>
   </body>
 </html>

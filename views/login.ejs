@@ -7,36 +7,48 @@
   <body>
     <%- include('./partials/nav') %>
     <div class="container mt-5">
-      <form class="w-50 mx-auto" action="/user/login" method="post">
-        <% if (locals.error) { %>
-        <div class="alert alert-danger" role="alert"><%= error %></div>
-        <% } %>
-        <div class="mb-3">
-          <label for="email" class="form-label">Email address</label>
-          <input
-            type="email"
-            class="form-control"
-            id="email"
-            aria-describedby="emailHelp"
-            name="email"
-          />
-          <div id="emailHelp" class="form-text">
-            We'll never share your email with anyone else.
-          </div>
-        </div>
+      <div class="row">
+        <div class="col-md-6 offset-md-3">
+          <form class="w-50 mx-auto" action="/user/login" method="post">
+            <% if (locals.error) { %>
+            <div class="alert alert-danger" role="alert"><%= error %></div>
+            <% } %>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email address</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                aria-describedby="emailHelp"
+                name="email"
+              />
+              <div id="emailHelp" class="form-text">
+                We'll never share your email with anyone else.
+              </div>
+            </div>
 
-        <div class="mb-3">
-          <label for="password" class="form-label">Password</label>
-          <input
-            type="password"
-            class="form-control"
-            id="password"
-            name="password"
-          />
-        </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                name="password"
+              />
+            </div>
 
-        <button type="submit" class="btn btn-primary">Login</button>
-      </form>
+            <button type="submit" class="btn-block btn btn-primary">
+              Login
+            </button>
+          </form>
+          <p class="text-center p-3">
+            Not Have Account?
+            <a href="/user/signup" class="btn btn-outline-primary p-1"
+              >Signup</a
+            >
+          </p>
+        </div>
+      </div>
     </div>
     <%- include('./partials/script') %>
   </body>
