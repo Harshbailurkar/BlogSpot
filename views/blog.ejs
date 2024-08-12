@@ -5,14 +5,60 @@
     <title>Home</title>
     <link rel="stylesheet" href="../public/css/style.css" />
     <style>
-      /* Override Bootstrap styles to remove dropdown icon */
-      .btn-no-dropdown::after {
-        display: none !important;
+      /* Custom CSS for dropdown */
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+
+      .dropdown-menu {
+        display: none;
+        position: absolute;
+        background-color: #333;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        border-radius: 4px;
+      }
+
+      .dropdown-menu a,
+      .dropdown-menu button {
+        color: white;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        background-color: #333;
+        border: none;
+        cursor: pointer;
+        text-align: left;
+      }
+
+      .dropdown-menu a:hover,
+      .dropdown-menu button:hover {
+        background-color: #575757;
+      }
+
+      .dropdown:hover .dropdown-menu {
+        display: block;
+      }
+
+      .dropdown-toggle {
+        cursor: pointer;
+        display: inline-block;
+        background: none;
+        border: none;
+        position: relative;
+        padding: 0;
+      }
+
+      /* Hide any extra arrow or icon */
+      .dropdown-toggle img {
+        display: none;
       }
     </style>
   </head>
 
-  <body>
+  <body style="background-color: #10172a; color: white">
     <%- include('./partials/nav') %><br />
     <u style="padding: 5px">
       <a
@@ -23,8 +69,10 @@
         >Back to All Blogs
       </a></u
     >
+    <!-- Other parts of your template -->
+
     <div class="article">
-      <% if(locals.blog) { %>
+      <% if (locals.blog) { %>
       <div class="container mt-4">
         <div
           style="
@@ -34,8 +82,8 @@
           "
         >
           <h1><%= blog.title %></h1>
-          <% if(blog && blog.createdBy && locals.user && locals.user._id
-          &&locals.user._id === blog.createdBy._id.toString() ){ %>
+          <% if (blog && blog.createdBy && locals.user && locals.user._id &&
+          locals.user._id === blog.createdBy._id.toString()) { %>
           <a id="deleteButton" href="/blog/deleteblog/<%= blog._id %>">
             <img
               src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAStJREFUSEvtVksOAUEQfS8O4AoOwMYFfC5gwZJwNMKShQv4XMBG7F3BAaRMS5uM0a2rIzIkM8vu9+r1q66aLqKgjwXpQiUsIhUAPQANwMsRAEcAa5LXkKGgsIgYzAZAOxTM7m9JdkNYjXDdOgnFyu7XSZ7eETTCxunWBumQ3LkCiogK9+D+hrCI1ABMco7M2tiuzZL9syeFIdyUZMp9cpxLV8ydarBP1/QbwtljJ+5NEbUA7JOC0rbSPYSG6y0uDdmXXw03SlhETOGZIjqTnFp3rrVgtmKFXwK63H3DcSnsrOAy1a62K6s6zYq2P7W4fLpjU13Mn0vz9v31I7FMhry+1qUHtyI5iG2nIYD5h8IjkosoYXtXTTsMVCMPcLEDxMHHC06ZkYJqeGHCN60sTC6Y6cxIAAAAAElFTkSuQmCC"
@@ -47,8 +95,11 @@
           <% } %>
         </div>
 
-        <img src="<%= blog.coverImageURL %>" class="blogImg" width="40%" />
-        <p class="mt-3"><%= blog.body %></p>
+        <img src="<%= blog.coverImageURL %>" class="blogImg" width="50%" />
+        <div class="mt-3">
+          <!-- Render HTML content from Markdown -->
+          <%- blog.body %>
+        </div>
       </div>
       <div class="container mt-4">
         <img
@@ -57,12 +108,13 @@
           style="border-radius: 50%"
           alt=" "
         />
-        <%= JSON.stringify(blog.createdBy.fullName).slice(1,-1) %> <br /><br />
+        <%= JSON.stringify(blog.createdBy.fullName).slice(1, -1) %> <br /><br />
         <span class="article-published"
           >Published At : <%= blog.createdAt %></span
         >
       </div>
 
+      <!-- Comments Section -->
       <div class="container mt-4">
         <h2>Comments (<%= Comments.length %>)</h2>
         <% if (locals.user) { %>
@@ -82,7 +134,6 @@
           <button type="submit" class="btn btn-primary">Submit</button>
         </form>
       </div>
-
       <% } %>
       <div class="m-3 mr-2 pl-3">
         <% Comments.forEach((comment) => { %>
@@ -92,22 +143,19 @@
               src="<%= comment.createdBy.profileImageUrl %>"
               width="30px"
               height="30px"
-              alt=" "
+              alt="user"
               style="border-radius: 50%"
             />
             <span class="p-2" style="display: flex; flex-direction: row">
-              <%= JSON.stringify(comment.createdBy.fullName).slice(1,-1) %> <%
+              <%= JSON.stringify(comment.createdBy.fullName).slice(1, -1) %> <%
               if (blog && comment && locals.user) { %>
               <div class="dropdown" style="margin-left: 10px">
-                <a
-                  class="nav-link dropdown-toggle btn-no-dropdown pl-3"
-                  href="#"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
+                <a class="dropdown-toggle" href="#" role="button">
                   <img
                     src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAQxJREFUSEvtlDFKQ0EURc+tTZEmCIIgZAeJlskqxBUIhhRmK0khouAGzB4C9kJIGetAxFIQG+E5CU8Zhoym+Ukzv/v/vvvucP5lxJ4e7SmXErwz8gV1QV0ZgVKuX7Rm1gK6wJOkaczczA6Ac//2KOkz0bPen7mNqM1sAAyjZT1Jd6t3M6sDz0DT9TnQlvThetYbHy4X/AY0osGFpGNf3A/aTdK6y6A/uJ71bhP8ChxGg0tJR764F7TbJPgq6PeuZ73bBF8Do2iwL2kd5qhX//zE9RfgTNK761nvv8G+4BTohIJNJM2S8tSAC+ALGG8oV9b7Z7kquzWixeUC2QXldUZBXVBXRqCUqzK06eJvKjddH3BvsCIAAAAASUVORK5CYII="
+                    alt="dropdown"
+                    width="20"
+                    height="20"
                   />
                 </a>
                 <ul class="dropdown-menu">
@@ -135,49 +183,22 @@
           <p class="pt-3 pl-7"><%= comment.content %></p>
         </div>
         <hr />
-        <% })%>
+        <% }) %>
       </div>
       <% } %>
     </div>
 
     <% include('./partials/script') %>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <% if (locals.message) { %>
     <script>
-      const swalWithBootstrapButtons = Swal.mixin({
-        customClass: {
-          confirmButton: "btn btn-success m-2",
-          cancelButton: "btn btn-danger m-2",
-        },
-        buttonsStyling: false,
+      Swal.fire({
+        icon: '<%= locals.message.type || "info" %>',
+        title: '<%= locals.message.title || "Notification" %>',
+        text: '<%= locals.message.text || "You have a new notification." %>',
+        confirmButtonText: "OK",
       });
-      document
-        .getElementById("deleteButton")
-        .addEventListener("click", function (event) {
-          event.preventDefault();
-
-          swalWithBootstrapButtons
-            .fire({
-              title: "Are you sure?",
-              text: "You won't be able to revert this!",
-              icon: "warning",
-              showCancelButton: true,
-              confirmButtonText: "Yes, delete it!",
-              cancelButtonText: "No, cancel!",
-              reverseButtons: true,
-            })
-            .then((result) => {
-              if (result.isConfirmed) {
-                // Proceed with the deletion by navigating to the delete endpoint
-                window.location.href = this.href;
-              } else if (result.dismiss === Swal.DismissReason.cancel) {
-                swalWithBootstrapButtons.fire({
-                  title: "Cancelled",
-                  text: "Your blog post is safe :)",
-                  icon: "error",
-                });
-              }
-            });
-        });
     </script>
+    <% } %>
   </body>
 </html>

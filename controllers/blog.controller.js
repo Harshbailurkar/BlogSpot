@@ -1,26 +1,60 @@
-import express from "express";
+import fs from "fs";
+import path from "path";
 import Blogs from "../models/blog.models.js";
 import comments from "../models/comments.models.js";
+import cloudinary from "cloudinary";
+import dotenv from "dotenv";
+import { marked } from "marked";
+
+dotenv.config({
+  path: "./.env",
+});
+
+cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 async function handleAddBlog(req, res) {
   const { title, body, description } = req.body;
-  // console.log(req.body);
-  // console.log(req.user);
+
   let coverImageURL = "";
   if (req.file) {
-    const file = req.file.filename;
-    console.log(file);
-    coverImageURL = `/uploads/${req.file.filename}`;
-  }
+    try {
+      // Upload the file to Cloudinary
+      const result = await cloudinary.v2.uploader.upload(req.file.path, {
+        folder: "blogs", // Optional: to organize uploads in a specific folder
+        public_id: `${req.file.filename}-${Date.now()}`, // Unique name for the uploaded file
+        resource_type: "image", // Specify the type of file being uploaded
+      });
+      coverImageURL = result.secure_url;
 
-  const blog = await Blogs.create({
-    title,
-    description,
-    body,
-    createdBy: req.user._id,
-    coverImageURL,
-  });
-  return res.redirect(`/blog/${blog._id}`);
+      // Delete the file from the server after successful upload
+      fs.unlink(req.file.path, (err) => {
+        if (err) {
+          console.error("Error deleting file from server:", err);
+        }
+      });
+    } catch (error) {
+      console.error("Error uploading to Cloudinary:", error);
+      return res.status(500).json({ message: "Error uploading image" });
+    }
+  }
+  const convertedBody = marked(body);
+  try {
+    const blog = await Blogs.create({
+      title,
+      description,
+      body: convertedBody,
+      createdBy: req.user._id,
+      coverImageURL,
+    });
+    return res.redirect(`/blog/${blog._id}`);
+  } catch (error) {
+    console.error("Error creating blog:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 }
 
 async function handleGetBlog(req, res) {

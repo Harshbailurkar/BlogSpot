@@ -3,20 +3,170 @@
   <head>
     <title>Add Blog</title>
     <%- include('./partials/head') %>
+    <style>
+      body {
+        background-color: #10172a;
+        color: white;
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #1a1f36;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .form-label {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+        color: #f0f0f0;
+      }
+
+      .form-control,
+      .form-control-md {
+        background-color: #2a2e45;
+        border: 1px solid #3a3f5c;
+        color: #f0f0f0;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 20px;
+        transition: border-color 0.3s ease-in-out;
+      }
+
+      .form-control:focus,
+      .form-control-md:focus {
+        border-color: #00b4d8;
+        outline: none;
+      }
+
+      .form-control::placeholder,
+      .form-control-md::placeholder {
+        color: #a0a0a0;
+      }
+
+      .custom-file-input {
+        display: none;
+      }
+
+      .custom-file-label {
+        display: inline-block;
+        background-color: #00b4d8;
+        color: #10172a;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+        text-align: center;
+        margin-bottom: 20px;
+        transition: background-color 0.3s ease-in-out;
+      }
+
+      .custom-file-label:hover {
+        background-color: #0077b6;
+      }
+
+      .custom-file-label::after {
+        content: " (Select a file)";
+        font-weight: normal;
+        font-size: 0.9rem;
+        color: #f0f0f0;
+      }
+
+      .custom-file-input:valid + .custom-file-label::after {
+        content: "";
+      }
+
+      .custom-file-input:valid + .custom-file-label {
+        background-color: #48cae4;
+        color: #10172a;
+      }
+
+      .btn-primary {
+        width: 100%;
+        padding: 12px;
+        background-color: #00b4d8;
+        border: none;
+        border-radius: 5px;
+        color: #10172a;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+      }
+
+      .btn-primary:hover {
+        background-color: #0077b6;
+      }
+
+      .markdown-preview {
+        background-color: #2a2e45;
+        border: 1px solid #3a3f5c;
+        color: #f0f0f0;
+        padding: 10px;
+        border-radius: 5px;
+        min-height: 150px;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          margin: 20px;
+          padding: 15px;
+        }
+      }
+
+      /* Custom styles for SimpleMDE to match the dark theme */
+      .editor-toolbar {
+        background-color: #8b8b8b !important;
+        border-color: #3a3f5c !important;
+      }
+
+      .editor-toolbar a {
+        color: #ffffff !important; /* Set the toolbar icon color to white */
+      }
+
+      .editor-toolbar a:hover {
+        background-color: wheat !important; /* Set the toolbar background color */
+        color: #000000 !important; /* Optionally change color on hover */
+      }
+
+      .CodeMirror {
+        background-color: #1a1f36 !important;
+        color: #f0f0f0 !important;
+        border-radius: 5px;
+      }
+
+      .CodeMirror-gutters {
+        background-color: #1a1f36 !important;
+        border-right: 1px solid #3a3f5c !important;
+      }
+
+      .CodeMirror-cursor {
+        border-left: 1px solid #00b4d8 !important;
+      }
+
+      .CodeMirror-placeholder {
+        color: #a0a0a0 !important;
+      }
+    </style>
+    <!-- SimpleMDE CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/simplemde@latest/dist/simplemde.min.css"
+    />
   </head>
   <body>
     <%- include("./partials/nav") %>
     <div class="container mt-3">
-      <form action="/blog" enctype="multipart/form-data" method="post">
-        <div class="mb-3">
-          <label for="formFile" class="form-label">Cover Image</label>
-          <input
-            class="form-control"
-            type="file"
-            name="coverImage"
-            id="coverImage"
-          />
-        </div>
+      <form
+        id="blogForm"
+        action="/blog"
+        enctype="multipart/form-data"
+        method="post"
+      >
+        <!-- Title Input -->
         <div class="mb-3">
           <label for="title" class="form-label">Title</label>
           <input
@@ -24,39 +174,89 @@
             id="title"
             name="title"
             class="form-control"
-            required="title"
+            placeholder="Enter the title of your blog"
+            required
           />
         </div>
+
+        <!-- Description Input -->
         <div class="mb-3">
-          <label for="description" class="form-label">description</label>
+          <label for="description" class="form-label">Description</label>
           <input
             type="text"
             id="description"
-            class="form-control"
             name="description"
+            class="form-control"
+            placeholder="Write a brief description"
           />
         </div>
+
+        <!-- Custom file upload -->
+        <div class="">
+          <label for="coverImage" class="form-label">Cover Image</label>
+          <br />
+          <input
+            type="file"
+            class="custom-file-input"
+            name="coverImage"
+            id="coverImage"
+          />
+          <label for="coverImage" class="custom-file-label"
+            >Choose Cover Image</label
+          >
+        </div>
+
+        <!-- Markdown Editor -->
         <div class="mb-3">
-          <label for="body">Body</label>
+          <label for="body" class="form-label">Body</label>
+          <!-- SimpleMDE handles this textarea -->
           <textarea
-            required
-            class="form-control"
+            class="form-control-md"
             id="body"
             name="body"
-            onkeyup="textAreaAdjust(this)"
-            style="overflow: hidden"
+            placeholder="Start writing your blog ....."
           ></textarea>
         </div>
+
+        <!-- Preview Section -->
+        <div class="mb-3">
+          <label class="form-label">Preview</label>
+          <div id="preview" class="markdown-preview"></div>
+        </div>
+
+        <!-- Submit Button -->
         <div class="mb-3">
           <button type="submit" class="btn btn-primary">Publish</button>
         </div>
       </form>
     </div>
+    <!-- SimpleMDE JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/simplemde@latest/dist/simplemde.min.js"></script>
     <script>
-      function textAreaAdjust(element) {
-        element.style.height = "1px";
-        element.style.height = 25 + element.scrollHeight + "px";
+      const simplemde = new SimpleMDE({
+        element: document.getElementById("body"),
+        spellChecker: false,
+        previewRender: function (plainText) {
+          return simplemde.markdown(plainText);
+        },
+      });
+
+      // Update preview on initial load and change
+      function updatePreview() {
+        const preview = document.getElementById("preview");
+        preview.innerHTML = simplemde.options.previewRender(simplemde.value());
       }
+
+      simplemde.codemirror.on("change", updatePreview);
+      updatePreview(); // Initial call to show preview
+
+      // Ensure the rendered Markdown is sent in the form submission
+      document
+        .getElementById("blogForm")
+        .addEventListener("submit", function () {
+          // Ensure that the original textarea has the current value from SimpleMDE
+          document.getElementById("body").value = simplemde.value();
+        });
     </script>
   </body>
 </html>

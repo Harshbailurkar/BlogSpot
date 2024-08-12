@@ -12,6 +12,7 @@ dotenv.config({
   path: "./.env",
 });
 const app = express();
+
 const PORT = process.env.PORT || 3000;
 
 connectToMongoDB(process.env.MONGO_URL).then(console.log("mongoDB connected"));

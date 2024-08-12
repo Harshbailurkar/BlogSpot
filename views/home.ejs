@@ -3,24 +3,138 @@
   <head>
     <%- include('./partials/head') %>
     <title>Home</title>
+    <style>
+      /* General body and text styling */
+      body {
+        background-color: #10172a;
+        margin: 0;
+        font-family: Arial, sans-serif;
+      }
+
+      .text-white {
+        color: white;
+      }
+
+      /* Hero text styling */
+      .heroText {
+        text-align: center;
+        margin-top: 50px;
+        color: white;
+      }
+
+      /* Container for the cards */
+      .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start; /* Align items to the left */
+        padding: 20px;
+      }
+
+      /* Card styling */
+      .card {
+        background-color: transparent;
+        width: 20rem;
+        margin: 20px;
+        border: 1px solid cyan !important; /* Enforce border color */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        color: white;
+        transition: all 0.3s ease-in-out;
+      }
+
+      /* Card title styling */
+      .card-title {
+        color: white !important; /* Enforce card title color */
+      }
+
+      /* Card text styling */
+      .card-text {
+        color: white !important; /* Enforce card text color */
+      }
+
+      /* Creator name styling */
+      .card-body span {
+        color: white !important; /* Enforce creator name color */
+      }
+
+      /* Button styling */
+      .btn-primary {
+        background-color: transparent;
+        border: 1px solid cyan !important; /* Enforce button border color */
+        color: cyan !important; /* Enforce button text color */
+        padding: 8px 0;
+        margin: 10px 0; /* Adjust margin to prevent overflow */
+        transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out,
+          border-color 0.3s ease-in-out;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 0;
+        display: block;
+        box-sizing: border-box;
+      }
+
+      .btn-primary:hover {
+        background-color: cyan !important;
+        color: #10172a !important;
+        border-color: cyan !important;
+      }
+
+      /* Image styling */
+      .card-img-top {
+        height: 180px;
+        transition: height 0.3s ease-in-out;
+        object-fit: cover;
+        border-radius: 0;
+      }
+
+      /* Card body styling */
+      .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background-color: #10172a !important;
+        padding: 10px;
+        color: white;
+        border-radius: 0;
+        box-sizing: border-box;
+      }
+
+      /* Hover effect on card */
+      .card:hover .card-img-top {
+        height: 160px;
+      }
+
+      /* Initially hide the button */
+      .card-body .btn-primary {
+        display: none;
+      }
+
+      /* Show button on hover */
+      .card:hover .card-body .btn-primary {
+        display: block;
+      }
+    </style>
   </head>
-  <bodyz>
+  <body style="background-color: #10172a">
     <%- include('./partials/nav') %>
-    <div class="row row-cols-4">
-      <% if(locals.blogs) { blogs.forEach(blog=> { %>
-      <div class="card mt-5 m-5 col" style="width: 18rem">
-        <img src="<%= blog.coverImageURL%>" class="card-img-top" alt="..." />
+    <h1 class="heroText" style="margin-bottom: 50px">
+      Write, Connect, and Create a World of Conversations
+    </h1>
+
+    <div class="container">
+      <% if(locals.blogs) { blogs.forEach(blog => { %>
+      <div class="card">
+        <img src="<%= blog.coverImageURL %>" class="card-img-top" />
         <div class="card-body">
           <h5 class="card-title"><%= blog.title %></h5>
-          <p class="card-text"><%= blog.description%></p>
-          <span class="mt-3 mb-3"
-            >by :  <%= blog.createdBy.fullName %></span
-          >
-          <a href="/blog/<%=blog._id  %>" class="btn btn-primary m-3">view</a>
+          <p class="card-text"><%= blog.description %></p>
+          <span>by: <%= blog.createdBy.fullName %></span>
+          <a href="/blog/<%= blog._id %>" class="btn-primary">View</a>
         </div>
       </div>
-      <%}); }%>
+      <% }); } %>
     </div>
-    <% include('./partials/script') %>
+    <%- include('./partials/script') %>
   </body>
 </html>
