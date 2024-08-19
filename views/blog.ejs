@@ -4,6 +4,10 @@
     <%- include('./partials/head') %>
     <title>Home</title>
     <link rel="stylesheet" href="../public/css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
       /* Custom CSS for dropdown */
       .dropdown {
@@ -58,7 +62,7 @@
     </style>
   </head>
 
-  <body style="background-color: #10172a; color: white">
+  <body style="background-color: #0a0d14; color: white">
     <%- include('./partials/nav') %><br />
     <u style="padding: 5px">
       <a
@@ -71,9 +75,12 @@
     >
     <!-- Other parts of your template -->
 
-    <div class="article">
+    <div
+      class="article"
+      style="display: flex; flex-direction: column; justify-content: center"
+    >
       <% if (locals.blog) { %>
-      <div class="container mt-4">
+      <div class="container mt-4" style="width: 75%">
         <div
           style="
             display: flex;
@@ -81,7 +88,16 @@
             justify-content: space-between;
           "
         >
-          <h1><%= blog.title %></h1>
+          <h1
+            style="
+              text-align: center;
+              padding: 10px;
+              padding-bottom: 50px;
+              font-size: 3rem;
+            "
+          >
+            <%= blog.title %>
+          </h1>
           <% if (blog && blog.createdBy && locals.user && locals.user._id &&
           locals.user._id === blog.createdBy._id.toString()) { %>
           <a id="deleteButton" href="/blog/deleteblog/<%= blog._id %>">
@@ -95,7 +111,12 @@
           <% } %>
         </div>
 
-        <img src="<%= blog.coverImageURL %>" class="blogImg" width="50%" />
+        <img
+          src="<%= blog.coverImageURL %>"
+          class="blogImg"
+          width="50%"
+          style="padding-bottom: 20px"
+        />
         <div class="mt-3">
           <!-- Render HTML content from Markdown -->
           <%- blog.body %>
@@ -201,4 +222,5 @@
     </script>
     <% } %>
   </body>
+  <%- include('./partials/footer') %>
 </html>

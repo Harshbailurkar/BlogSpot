@@ -125,16 +125,17 @@
     <div class="container">
       <% if(locals.blogs) { blogs.forEach(blog => { %>
       <div class="card">
-        <img src="<%= blog.coverImageURL %>" class="card-img-top" />
+        <img src="<%= blog?.coverImageURL %>" class="card-img-top" />
         <div class="card-body">
-          <h5 class="card-title"><%= blog.title %></h5>
-          <p class="card-text"><%= blog.description %></p>
-          <span>by: <%= blog.createdBy.fullName %></span>
-          <a href="/blog/<%= blog._id %>" class="btn-primary">View</a>
+          <h5 class="card-title"><%= blog?.title %></h5>
+          <p class="card-text"><%= blog?.description %></p>
+          <span>by: <%= blog?.createdBy?.fullName %></span>
+          <a href="/blog/<%= blog?._id %>" class="btn-primary">View</a>
         </div>
       </div>
       <% }); } %>
     </div>
     <%- include('./partials/script') %>
   </body>
+  <%- include('./partials/footer') %>
 </html>
